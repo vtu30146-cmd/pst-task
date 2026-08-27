@@ -1,0 +1,52 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+
+        int[] arr = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        // First window
+        for (int i = 0; i < k; i++) {
+            map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
+        }
+
+        int maxUnique = map.size();
+
+        // Slide the window
+        for (int i = k; i < n; i++) {
+
+            // Remove the element leaving the window
+            int remove = arr[i - k];
+
+            map.put(remove, map.get(remove) - 1);
+
+            if (map.get(remove) == 0) {
+                map.remove(remove);
+            }
+
+            // Add the new element
+            int add = arr[i];
+            map.put(add, map.getOrDefault(add, 0) + 1);
+
+            // Update maximum unique count
+            maxUnique = Math.max(maxUnique, map.size());
+        }
+
+        System.out.println(maxUnique);
+
+        sc.close();
+    }
+}
+
+
