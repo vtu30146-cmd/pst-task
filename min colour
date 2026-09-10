@@ -1,0 +1,54 @@
+# Task 5: Graph Coloring
+
+# Graph representation using adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'D'],
+    'D': ['B', 'C', 'E'],
+    'E': ['D']
+}
+
+# Function to check if a color can be assigned
+def is_safe(vertex, color, colors):
+    for neighbor in graph[vertex]:
+        if colors.get(neighbor) == color:
+            return False
+    return True
+
+
+# Backtracking function for graph coloring
+def graph_coloring(vertices, colors, index, num_colors):
+    if index == len(vertices):
+        return True
+
+    vertex = vertices[index]
+
+    for color in range(1, num_colors + 1):
+        if is_safe(vertex, color, colors):
+            colors[vertex] = color
+
+            if graph_coloring(vertices, colors, index + 1, num_colors):
+                return True
+
+            # Backtrack
+            del colors[vertex]
+
+    return False
+
+
+# Vertices
+vertices = list(graph.keys())
+
+# Find minimum number of colors
+for num_colors in range(1, len(vertices) + 1):
+    colors = {}
+
+    if graph_coloring(vertices, colors, 0, num_colors):
+        print("Minimum number of colors:", num_colors)
+        print("Color assignment:")
+
+        for vertex in vertices:
+            print(vertex, "-> Color", colors[vertex])
+
+        break
