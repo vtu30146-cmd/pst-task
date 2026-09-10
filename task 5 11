@@ -1,0 +1,24 @@
+# Task 5: Calculate Proportional Values
+
+# Get input values
+R1 = float(input("Enter R1: "))
+R2 = float(input("Enter R2: "))
+
+# Calculate total
+total = R1 + R2
+
+# Calculate proportional values
+P1 = R1 / total
+P2 = R2 / total
+
+# Display results
+print("\nTotal =", total)
+print("P1 =", P1)
+print("P1 Percentage =", P1 * 100, "%")
+
+print("P2 =", P2)
+print("P2 Percentage =", P2 * 100, "%")
+
+# Verification
+print("\nVerification:")
+print("P1 + P2 =", P1 + P2)
