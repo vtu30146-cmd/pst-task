@@ -1,0 +1,72 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Read number of test cases
+        int T = sc.nextInt();
+
+        while (T > 0) {
+
+            String s = sc.next();
+
+            int n = s.length();
+
+            // Frequency arrays for left and right halves
+            int[] left = new int[26];
+            int[] right = new int[26];
+
+            // Count characters in the left half
+            for (int i = 0; i < n / 2; i++) {
+
+                char ch = s.charAt(i);
+
+                left[ch - 'a']++;
+            }
+
+            // Find where the right half starts
+            int start;
+
+            if (n % 2 == 0) {
+                start = n / 2;
+            } else {
+                start = n / 2 + 1;
+            }
+
+            // Count characters in the right half
+            for (int i = start; i < n; i++) {
+
+                char ch = s.charAt(i);
+
+                right[ch - 'a']++;
+            }
+
+            // Compare frequencies
+            boolean isLapindrome = true;
+
+            for (int i = 0; i < 26; i++) {
+
+                if (left[i] != right[i]) {
+
+                    isLapindrome = false;
+
+                    break;
+                }
+            }
+
+            // Print answer
+            if (isLapindrome) {
+                System.out.println("YES");
+            } else {
+                System.out.println("NO");
+            }
+
+            T--;
+        }
+
+        sc.close();
+    }
+}
