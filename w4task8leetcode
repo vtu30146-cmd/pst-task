@@ -1,51 +1,25 @@
-import java.util.Scanner;
 
-public class Task8 {
+class Solution {
 
-    public static void main(String[] args) {
+    public int[][] transpose(int[][] matrix) {
 
-        Scanner sc = new Scanner(System.in);
+        int rows = matrix.length;
+        int columns = matrix[0].length;
 
-        System.out.print("Enter number of rows: ");
-        int rows = sc.nextInt();
+        // Create transpose matrix
+        int[][] result = new int[columns][rows];
 
-        System.out.print("Enter number of columns: ");
-        int columns = sc.nextInt();
-
-        int[][] matrix = new int[rows][columns];
-
-        System.out.println("Enter the matrix:");
-
+        // Fill transpose matrix
         for (int i = 0; i < rows; i++) {
 
             for (int j = 0; j < columns; j++) {
 
-                matrix[i][j] = sc.nextInt();
+                result[j][i] = matrix[i][j];
             }
         }
 
-        int[][] transpose = new int[columns][rows];
-
-        for (int i = 0; i < rows; i++) {
-
-            for (int j = 0; j < columns; j++) {
-
-                transpose[j][i] = matrix[i][j];
-            }
-        }
-
-        System.out.println("Transpose matrix:");
-
-        for (int i = 0; i < columns; i++) {
-
-            for (int j = 0; j < rows; j++) {
-
-                System.out.print(transpose[i][j] + " ");
-            }
-
-            System.out.println();
-        }
-
-        sc.close();
+        return result;
     }
 }
+
+
