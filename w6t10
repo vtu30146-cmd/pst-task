@@ -1,0 +1,166 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    static int[] manacher(char[] s) {
+        int n = s.length;
+        int[] p = new int[n];
+
+        int center = 0;
+        int right = 0;
+
+        for (int i = 0; i < n; i++) {
+            int mirror = 2 * center - i;
+
+            if (i < right) {
+                p[i] = Math.min(right - i, p[mirror]);
+            }
+
+            while (i + 1 + p[i] < n &&
+                   i - 1 - p[i] >= 0 &&
+                   s[i + 1 + p[i]] == s[i - 1 - p[i]]) {
+                p[i]++;
+            }
+
+            if (i + p[i] > right) {
+                center = i;
+                right = i + p[i];
+            }
+        }
+
+        return p;
+    }
+
+    static int[] circularPalindromes(String s) {
+        int n = s.length();
+
+        // Create doubled string.
+        char[] doubled = new char[2 * n];
+        for (int i = 0; i < 2 * n; i++) {
+            doubled[i] = s.charAt(i % n);
+        }
+
+        /*
+         * Transform the string so that both odd and even
+         * length palindromes can be handled uniformly.
+         *
+         * Example: "abba" -> "#a#b#b#a#"
+         */
+        char[] t = new char[4 * n + 1];
+
+        for (int i = 0; i < t.length; i++) {
+            if ((i & 1) == 0) {
+                t[i] = '#';
+            } else {
+                t[i] = doubled[i / 2];
+            }
+        }
+
+        int[] p = manacher(t);
+
+        /*
+         * best[i] = answer for rotation starting at i.
+         *
+         * For every palindrome, determine the rotations in
+         * which that palindrome fits completely.
+         */
+        int[] best = new int[n];
+
+        for (int center = 0; center < p.length; center++) {
+            int radius = p[center];
+
+            if (radius == 0) {
+                continue;
+            }
+
+            // Maximum palindrome length cannot exceed n.
+            int length = radius;
+
+            if (length > 2 * n) {
+                length = 2 * n;
+            }
+
+            /*
+             * The palindrome occupies:
+             * [center - radius, center + radius]
+             *
+             * We consider possible starting positions of
+             * rotations for which it fits inside n characters.
+             */
+            int left = center - radius;
+            int right = center + radius;
+
+            int startMin = Math.max(0, right - 2 * n + 1);
+            int startMax = Math.min(n - 1, left);
+
+            if (startMin <= startMax) {
+                int palLength = (radius * 2) / 2;
+
+                // The transformed radius corresponds to
+                // the palindrome length.
+                palLength = radius;
+
+                if (palLength > n) {
+                    palLength = n;
+                }
+
+                for (int start = startMin; start <= startMax; start++) {
+                    if (palLength > best[start]) {
+                        best[start] = palLength;
+                    }
+                }
+            }
+        }
+
+        /*
+         * The loop above can miss the exact clipped palindrome
+         * for a rotation. Calculate answers directly from the
+         * doubled string using the Manacher radii.
+         */
+        Arrays.fill(best, 1);
+
+        for (int start = 0; start < n; start++) {
+            int windowLeft = 2 * start + 1;
+            int windowRight = windowLeft + 2 * n - 2;
+
+            for (int center = windowLeft; center <= windowRight; center++) {
+                int radius = p[center];
+
+                int possible = Math.min(
+                    radius,
+                    Math.min(center - windowLeft + 1,
+                             windowRight - center + 1)
+                );
+
+                if (possible > best[start]) {
+                    best[start] = possible;
+                }
+            }
+        }
+
+        return best;
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br =
+            new BufferedReader(new InputStreamReader(System.in));
+
+        int n = Integer.parseInt(br.readLine().trim());
+        String s = br.readLine().trim();
+
+        int[] result = circularPalindromes(s);
+
+        StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            out.append(result[i]);
+
+            if (i + 1 < n) {
+                out.append('\n');
+            }
+        }
+
+        System.out.print(out.toString());
+    }
+}
